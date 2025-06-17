@@ -55,10 +55,11 @@
 		</dependency>
 
 		<!-- Fabric Gateway SDK -->
+		<!-- Hyperledger Fabric -->
 		<dependency>
 			<groupId>org.hyperledger.fabric</groupId>
 			<artifactId>fabric-gateway</artifactId>
-			<version>1.7.0</version>
+			<version>1.4.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.hyperledger.fabric-sdk-java/fabric-sdk-java -->

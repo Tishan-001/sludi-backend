@@ -1,5 +1,7 @@
 package com.sludi.sludi.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Identity {
     private String nic;
     private String fullName;
@@ -13,7 +15,36 @@ public class Identity {
     private String biometricHash;
     private String status;
 
-    // Getters and Setters
+    // New wallet-related fields
+    @JsonProperty("publicKey")
+    private String publicKey;
+
+    @JsonProperty("walletId")
+    private String walletId;
+
+    @JsonProperty("certificateHash")
+    private String certificateHash;
+
+    // Constructors
+    public Identity() {}
+
+    public Identity(String nic, String fullName, String dateOfBirth, String gender,
+                    String address, String phoneNumber, String email, String issuedDate,
+                    String issuedBy, String biometricHash, String status) {
+        this.nic = nic;
+        this.fullName = fullName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.issuedDate = issuedDate;
+        this.issuedBy = issuedBy;
+        this.biometricHash = biometricHash;
+        this.status = status;
+    }
+
+    // Existing getters and setters
     public String getNic() { return nic; }
     public void setNic(String nic) { this.nic = nic; }
 
@@ -46,4 +77,14 @@ public class Identity {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    // New wallet-related getters and setters
+    public String getPublicKey() { return publicKey; }
+    public void setPublicKey(String publicKey) { this.publicKey = publicKey; }
+
+    public String getWalletId() { return walletId; }
+    public void setWalletId(String walletId) { this.walletId = walletId; }
+
+    public String getCertificateHash() { return certificateHash; }
+    public void setCertificateHash(String certificateHash) { this.certificateHash = certificateHash; }
 }
