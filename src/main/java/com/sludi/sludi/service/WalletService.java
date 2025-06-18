@@ -1,9 +1,8 @@
 package com.sludi.sludi.service;
 
-import org.hyperledger.fabric.gateway.Wallet;
-import org.hyperledger.fabric.gateway.Wallets;
+import com.sludi.sludi.util.CertificateUtils;
+import org.hyperledger.fabric.gateway.*;
 import org.hyperledger.fabric.gateway.Identity;
-import org.hyperledger.fabric.gateway.X509Identity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -53,13 +52,12 @@ public class WalletService {
         String publicKeyString = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
         String privateKeyString = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
 
-        // Create a mock certificate for the user (in production, this would be issued by CA)
+        // Create a mock certificate for the user ( this should be changed to issued by CA)
         X509Certificate certificate = createMockCertificate(keyPair, nic, fullName);
         String certificateHash = calculateCertificateHash(certificate);
 
         // Create Fabric identity
-        Identity identity = new X509Identity(mspId, certificate, keyPair.getPrivate());
-
+        Identity identity = Identities.newX509Identity(mspId, certificate, keyPair.getPrivate());
         // Store in wallet
         wallet.put(walletId, identity);
 

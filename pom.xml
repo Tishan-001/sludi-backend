@@ -53,13 +53,17 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
 
 		<!-- Fabric Gateway SDK -->
 		<!-- Hyperledger Fabric -->
 		<dependency>
 			<groupId>org.hyperledger.fabric</groupId>
 			<artifactId>fabric-gateway</artifactId>
-			<version>1.4.0</version>
+			<version>1.7.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.hyperledger.fabric-sdk-java/fabric-sdk-java -->
@@ -67,6 +71,13 @@
 			<groupId>org.hyperledger.fabric-sdk-java</groupId>
 			<artifactId>fabric-sdk-java</artifactId>
 			<version>2.2.24</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.hyperledger.fabric/fabric-gateway-java -->
+		<dependency>
+			<groupId>org.hyperledger.fabric</groupId>
+			<artifactId>fabric-gateway-java</artifactId>
+			<version>2.2.1</version>
 		</dependency>
 
 		<dependency>
