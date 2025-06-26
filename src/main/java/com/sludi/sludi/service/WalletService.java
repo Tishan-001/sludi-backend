@@ -1,5 +1,6 @@
 package com.sludi.sludi.service;
 
+import com.sludi.sludi.DTO.WalletCreationResult;
 import com.sludi.sludi.util.CertificateUtils;
 import org.hyperledger.fabric.gateway.*;
 import org.hyperledger.fabric.gateway.Identity;
@@ -92,8 +93,7 @@ public class WalletService {
             throw new IllegalArgumentException("Wallet not found: " + walletId);
         }
 
-        if (identity instanceof X509Identity) {
-            X509Identity x509Identity = (X509Identity) identity;
+        if (identity instanceof X509Identity x509Identity) {
             PrivateKey privateKey = x509Identity.getPrivateKey();
 
             Signature signature = Signature.getInstance("SHA256withRSA");
@@ -151,25 +151,5 @@ public class WalletService {
         wallet.remove(walletId);
     }
 
-    /**
-     * Result class for wallet creation
-     */
-    public static class WalletCreationResult {
-        private final String walletId;
-        private final String publicKey;
-        private final String privateKey;
-        private final String certificateHash;
 
-        public WalletCreationResult(String walletId, String publicKey, String privateKey, String certificateHash) {
-            this.walletId = walletId;
-            this.publicKey = publicKey;
-            this.privateKey = privateKey;
-            this.certificateHash = certificateHash;
-        }
-
-        public String getWalletId() { return walletId; }
-        public String getPublicKey() { return publicKey; }
-        public String getPrivateKey() { return privateKey; }
-        public String getCertificateHash() { return certificateHash; }
-    }
 }

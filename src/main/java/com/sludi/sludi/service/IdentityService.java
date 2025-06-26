@@ -1,5 +1,8 @@
 package com.sludi.sludi.service;
 
+import com.sludi.sludi.DTO.IdentityCreationResult;
+import com.sludi.sludi.DTO.IdentityVerificationResult;
+import com.sludi.sludi.DTO.WalletCreationResult;
 import com.sludi.sludi.domain.Identity;
 import com.sludi.sludi.util.JsonUtil;
 import org.hyperledger.fabric.client.*;
@@ -31,7 +34,7 @@ public class IdentityService {
     }
 
     /**
-     * Enhanced identity creation with wallet generation
+     * Identity creation with wallet generation
      */
     @Transactional
     public IdentityCreationResult createIdentityWithWallet(Identity identity)
@@ -39,15 +42,15 @@ public class IdentityService {
 
         try {
             // First, create the wallet for the user
-            WalletService.WalletCreationResult walletResult = walletService.createUserWallet(
+            WalletCreationResult walletResult = walletService.createUserWallet(
                     identity.getNic(),
                     identity.getFullName()
             );
 
             // Set wallet information in the identity
-            identity.setWalletId(walletResult.getWalletId());
-            identity.setPublicKey(walletResult.getPublicKey());
-            identity.setCertificateHash(walletResult.getCertificateHash());
+            identity.setWalletId(walletResult.walletId());
+            identity.setPublicKey(walletResult.publicKey());
+            identity.setCertificateHash(walletResult.certificateHash());
 
             // Create identity on the blockchain
             contract.submitTransaction("CreateIdentity",
@@ -61,18 +64,17 @@ public class IdentityService {
                     identity.getIssuedDate(),
                     identity.getIssuedBy(),
                     identity.getBiometricHash(),
-                    identity.getStatus()
-                    // Additional wallet parameters
-//                    identity.getPublicKey(),
-//                    identity.getWalletId(),
-//                    identity.getCertificateHash()
+                    identity.getStatus(),
+                    identity.getPublicKey(),
+                    identity.getWalletId(),
+                    identity.getCertificateHash()
             );
 
             return new IdentityCreationResult(
                     identity,
-                    walletResult.getWalletId(),
-                    walletResult.getPublicKey(),
-                    walletResult.getPrivateKey() // Return private key only once during creation
+                    walletResult.walletId(),
+                    walletResult.publicKey(),
+                    walletResult.privateKey() // Return private key only once during creation
             );
 
         } catch (Exception e) {
@@ -87,25 +89,6 @@ public class IdentityService {
             }
             throw new RuntimeException("Failed to create identity with wallet", e);
         }
-    }
-
-    /**
-     * Traditional identity creation (backward compatibility)
-     */
-    public void createIdentity(Identity identity)
-            throws EndorseException, SubmitException, CommitStatusException, CommitException {
-        contract.submitTransaction("CreateIdentity",
-                identity.getNic(),
-                identity.getFullName(),
-                identity.getDateOfBirth(),
-                identity.getGender(),
-                identity.getAddress(),
-                identity.getPhoneNumber(),
-                identity.getEmail(),
-                identity.getIssuedDate(),
-                identity.getIssuedBy(),
-                identity.getBiometricHash(),
-                identity.getStatus());
     }
 
     public String readIdentity(String nic) throws GatewayException {
@@ -187,44 +170,4 @@ public class IdentityService {
         return "CHALLENGE_" + nic + "_" + System.currentTimeMillis();
     }
 
-    /**
-     * Result class for identity creation with wallet
-     */
-    public static class IdentityCreationResult {
-        private final Identity identity;
-        private final String walletId;
-        private final String publicKey;
-        private final String privateKey; // Only provided during creation
-
-        public IdentityCreationResult(Identity identity, String walletId, String publicKey, String privateKey) {
-            this.identity = identity;
-            this.walletId = walletId;
-            this.publicKey = publicKey;
-            this.privateKey = privateKey;
-        }
-
-        public Identity getIdentity() { return identity; }
-        public String getWalletId() { return walletId; }
-        public String getPublicKey() { return publicKey; }
-        public String getPrivateKey() { return privateKey; }
-    }
-
-    /**
-     * Result class for identity verification
-     */
-    public static class IdentityVerificationResult {
-        private final boolean verified;
-        private final String message;
-        private final String identityData;
-
-        public IdentityVerificationResult(boolean verified, String message, String identityData) {
-            this.verified = verified;
-            this.message = message;
-            this.identityData = identityData;
-        }
-
-        public boolean isVerified() { return verified; }
-        public String getMessage() { return message; }
-        public String getIdentityData() { return identityData; }
-    }
 }
