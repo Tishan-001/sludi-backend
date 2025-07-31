@@ -8,6 +8,12 @@
 		<version>3.5.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	<groupId>com.sludi</groupId>
 	<artifactId>sludi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -104,6 +110,12 @@
 			<artifactId>grpc-netty-shaded</artifactId>
 			<version>1.70.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.ipfs</groupId>
+			<artifactId>java-ipfs-http-client</artifactId>
+			<version>1.4.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
