@@ -1,8 +1,12 @@
 package com.sludi.sludi.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
+@Entity
 public class Identity {
+    @Id
     private String nic;
     private String fullName;
     private String dateOfBirth;

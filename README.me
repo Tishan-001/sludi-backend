@@ -19,3 +19,22 @@ ipfs daemon
 
 #Verify the node is running:Open a new terminal and run
 ipfs id
+
+#Install postgres
+# Update package index
+sudo apt update
+
+# Install PostgreSQL and client tools
+sudo apt install postgresql postgresql-contrib
+
+#Start & enable the service
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+#Check status:
+sudo systemctl status postgresql
+
+#Verify Installation
+sudo -i -u postgres
+psql
+
