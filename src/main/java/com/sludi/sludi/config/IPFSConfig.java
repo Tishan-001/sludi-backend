@@ -11,15 +11,9 @@ public class IPFSConfig {
     private final IPFS ipfs;
 
     public IPFSConfig() {
-        String projectId = "";
-        String projectSecret = "";
-        String multiaddr = "/dns/ipfs.infura.io/tcp/5001/https";
-        this.ipfs = new IPFS(multiaddr);
-        this.ipfs.updateHeaders.set("Authorization",
-                "Basic " + java.util.Base64.getEncoder()
-                        .encodeToString((projectId + ":" + projectSecret).getBytes())
-        );
 
+        String multiaddr = "/ip4/127.0.0.1/tcp/5001";
+        this.ipfs = new IPFS(multiaddr);
     }
 
     public IPFS getIpfs() {
