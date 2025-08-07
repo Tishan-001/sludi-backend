@@ -4,6 +4,7 @@ import com.sludi.sludi.DTO.IdentityCreationResult;
 import com.sludi.sludi.DTO.IdentityVerificationResult;
 import com.sludi.sludi.DTO.WalletCreationResult;
 import com.sludi.sludi.domain.Identity;
+import com.sludi.sludi.repository.IdentityRepository;
 import com.sludi.sludi.util.JsonUtil;
 import org.hyperledger.fabric.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ public class IdentityService {
 
     private final Contract contract;
     private final WalletService walletService;
+    private final IdentityRepository identityRepository;
 
     @Autowired
-    public IdentityService(Contract contract, WalletService walletService) {
+    public IdentityService(Contract contract, WalletService walletService, IdentityRepository identityRepository) {
         this.contract = contract;
         this.walletService = walletService;
+        this.identityRepository = identityRepository;
     }
 
     public void initLedger() throws EndorseException, SubmitException, CommitStatusException, CommitException {
@@ -51,6 +54,9 @@ public class IdentityService {
             identity.setWalletId(walletResult.walletId());
             identity.setPublicKey(walletResult.publicKey());
             identity.setCertificateHash(walletResult.certificateHash());
+
+            //create identity on PostgresSQL database
+            identityRepository.save(identity);
 
             // Create identity on the blockchain
             contract.submitTransaction("CreateIdentity",
@@ -118,7 +124,7 @@ public class IdentityService {
             var result = contract.evaluateTransaction("ReadIdentity", nic);
             if (result != null) {
                 // Parse result to get wallet ID and remove wallet
-                // This is a simplified approach - you might want to deserialize the JSON
+                // This is a simplified approach - this might want to deserialize the JSON
                 String resultStr = new String(result, StandardCharsets.UTF_8);
                 // Extract wallet ID from JSON and remove wallet
                 // Implementation depends on your JSON structure
@@ -150,7 +156,7 @@ public class IdentityService {
             }
 
             String identityJson = new String(result, StandardCharsets.UTF_8);
-            // Parse JSON to extract public key (you might want to use a JSON library)
+            // Parse JSON to extract public key
             // This is simplified - implement proper JSON parsing
 
             // For now, let's assume we can extract the public key

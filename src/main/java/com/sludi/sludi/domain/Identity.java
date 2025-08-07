@@ -1,32 +1,66 @@
 package com.sludi.sludi.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "identities", uniqueConstraints = @UniqueConstraint(columnNames = "nic"))
 public class Identity {
     @Id
+    @Size(max = 50, message = "NIC must not exceed 50 characters")
+    @Column(length = 50)
     private String nic;
+
+    @Size(max = 100, message = "Full name must not exceed 100 characters")
+    @Column(length = 100)
     private String fullName;
+
+    @Size(max = 10, message = "Date of birth must not exceed 10 characters")
+    @Column(length = 10)
     private String dateOfBirth;
+
+    @Size(max = 10, message = "Gender must not exceed 10 characters")
+    @Column(length = 10)
     private String gender;
+
+    @Column(columnDefinition = "TEXT")
     private String address;
+
+    @Size(max = 20, message = "Phone number must not exceed 20 characters")
+    @Column(length = 20)
     private String phoneNumber;
+
+    @Size(max = 100, message = "Email must not exceed 100 characters")
+    @Column(length = 100)
     private String email;
+
+    @Size(max = 10, message = "Issued date must not exceed 10 characters")
+    @Column(length = 10) // e.g., "YYYY-MM-DD"
     private String issuedDate;
+
+    @Size(max = 100, message = "Issued by must not exceed 100 characters")
+    @Column(length = 100)
     private String issuedBy;
+
+    @Column(columnDefinition = "TEXT")
     private String biometricHash;
+
+    @Size(max = 20, message = "Status must not exceed 20 characters")
+    @Column(length = 20)
     private String status;
 
-    // New wallet-related fields
     @JsonProperty("publicKey")
+    @Column(columnDefinition = "TEXT")
     private String publicKey;
 
     @JsonProperty("walletId")
+    @Size(max = 100, message = "Wallet ID must not exceed 100 characters")
+    @Column(length = 100)
     private String walletId;
 
     @JsonProperty("certificateHash")
+    @Column(columnDefinition = "TEXT")
     private String certificateHash;
 
     // Constructors
