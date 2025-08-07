@@ -43,7 +43,7 @@ public class Identity {
     @Column(length = 100)
     private String issuedBy;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT") // Allow long biometric hashes
     private String biometricHash;
 
     @Size(max = 20, message = "Status must not exceed 20 characters")

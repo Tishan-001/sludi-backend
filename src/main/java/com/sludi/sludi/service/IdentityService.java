@@ -55,9 +55,7 @@ public class IdentityService {
             identity.setPublicKey(walletResult.publicKey());
             identity.setCertificateHash(walletResult.certificateHash());
 
-            //create identity on PostgresSQL database
             identityRepository.save(identity);
-
             // Create identity on the blockchain
             contract.submitTransaction("CreateIdentity",
                     identity.getNic(),
@@ -124,7 +122,7 @@ public class IdentityService {
             var result = contract.evaluateTransaction("ReadIdentity", nic);
             if (result != null) {
                 // Parse result to get wallet ID and remove wallet
-                // This is a simplified approach - this might want to deserialize the JSON
+                // This is a simplified approach - you might want to deserialize the JSON
                 String resultStr = new String(result, StandardCharsets.UTF_8);
                 // Extract wallet ID from JSON and remove wallet
                 // Implementation depends on your JSON structure
@@ -156,7 +154,7 @@ public class IdentityService {
             }
 
             String identityJson = new String(result, StandardCharsets.UTF_8);
-            // Parse JSON to extract public key
+            // Parse JSON to extract public key (you might want to use a JSON library)
             // This is simplified - implement proper JSON parsing
 
             // For now, let's assume we can extract the public key
