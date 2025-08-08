@@ -1,99 +1,122 @@
 package com.sludi.sludi.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "identities", uniqueConstraints = @UniqueConstraint(columnNames = "nic"))
+@Table(name = "identities")
 public class Identity {
+
     @Id
-    @Size(max = 50, message = "NIC must not exceed 50 characters")
-    @Column(length = 50)
-    private String nic;
+    @Column(name = "nic", length = 12)
+    private String nic; // Primary key - National Identity Card Number
 
-    @Size(max = 100, message = "Full name must not exceed 100 characters")
-    @Column(length = 100)
-    private String fullName;
+    @Column(name = "date_of_birth", nullable = false)
+    private String dateOfBirth; // Required for age verification
 
-    @Size(max = 10, message = "Date of birth must not exceed 10 characters")
-    @Column(length = 10)
-    private String dateOfBirth;
+    @Column(name = "gender", length = 10, nullable = false)
+    private String gender; // Required for official documents
 
-    @Size(max = 10, message = "Gender must not exceed 10 characters")
-    @Column(length = 10)
-    private String gender;
-
-    @Column(columnDefinition = "TEXT")
-    private String address;
-
-    @Size(max = 20, message = "Phone number must not exceed 20 characters")
-    @Column(length = 20)
-    private String phoneNumber;
-
-    @Size(max = 100, message = "Email must not exceed 100 characters")
-    @Column(length = 100)
-    private String email;
-
-    @Size(max = 10, message = "Issued date must not exceed 10 characters")
-    @Column(length = 10) // e.g., "YYYY-MM-DD"
+    @Column(name = "issued_date", nullable = false)
     private String issuedDate;
 
-    @Size(max = 100, message = "Issued by must not exceed 100 characters")
-    @Column(length = 100)
+    @Column(name = "issued_by", length = 100, nullable = false)
     private String issuedBy;
 
-    @Column(columnDefinition = "TEXT") // Allow long biometric hashes
-    private String biometricHash;
+    @Column(name = "status", length = 20, nullable = false)
+    private String status; // Active, Suspended, Revoked
 
-    @Size(max = 20, message = "Status must not exceed 20 characters")
-    @Column(length = 20)
-    private String status;
-
-    @JsonProperty("publicKey")
-    @Column(columnDefinition = "TEXT")
-    private String publicKey;
-
-    @JsonProperty("walletId")
-    @Size(max = 100, message = "Wallet ID must not exceed 100 characters")
-    @Column(length = 100)
+    @Column(name = "wallet_id", length = 100)
     private String walletId;
 
-    @JsonProperty("certificateHash")
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "public_key", length = 500)
+    private String publicKey;
+
+    @Column(name = "certificate_hash", length = 64)
     private String certificateHash;
 
-    // Constructors
+    @Column(name = "biometric_hash", length = 64)
+    private String biometricHash;
+
+    @Column(name = "personal_data_id")
+    private Long personalDataId; // Foreign key to encrypted personal data
+
+    @Column(name = "documents_ipfs_hash", length = 100)
+    private String documentsIPFSHash; // IPFS reference for documents
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // Transient fields (not stored in DB, populated when needed)
+    @Transient
+    private String fullName;
+
+    @Transient
+    private String address;
+
+    @Transient
+    private String phoneNumber;
+
+    @Transient
+    private String email;
+
+    @Transient
+    private String emergencyContact;
+
+    // Default constructor
     public Identity() {}
 
-    public Identity(String nic, String fullName, String dateOfBirth, String gender,
-                    String address, String phoneNumber, String email, String issuedDate,
-                    String issuedBy, String biometricHash, String status) {
-        this.nic = nic;
-        this.fullName = fullName;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.issuedDate = issuedDate;
-        this.issuedBy = issuedBy;
-        this.biometricHash = biometricHash;
-        this.status = status;
-    }
-
-    // Existing getters and setters
+    // Getters and Setters
     public String getNic() { return nic; }
     public void setNic(String nic) { this.nic = nic; }
-
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public String getDateOfBirth() { return dateOfBirth; }
     public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
     public String getGender() { return gender; }
     public void setGender(String gender) { this.gender = gender; }
+
+    public String getIssuedDate() { return issuedDate; }
+    public void setIssuedDate(String issuedDate) { this.issuedDate = issuedDate; }
+
+    public String getIssuedBy() { return issuedBy; }
+    public void setIssuedBy(String issuedBy) { this.issuedBy = issuedBy; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getWalletId() { return walletId; }
+    public void setWalletId(String walletId) { this.walletId = walletId; }
+
+    public String getPublicKey() { return publicKey; }
+    public void setPublicKey(String publicKey) { this.publicKey = publicKey; }
+
+    public String getCertificateHash() { return certificateHash; }
+    public void setCertificateHash(String certificateHash) { this.certificateHash = certificateHash; }
+
+    public String getBiometricHash() { return biometricHash; }
+    public void setBiometricHash(String biometricHash) { this.biometricHash = biometricHash; }
+
+    public Long getPersonalDataId() { return personalDataId; }
+    public void setPersonalDataId(Long personalDataId) { this.personalDataId = personalDataId; }
+
+    public String getDocumentsIPFSHash() { return documentsIPFSHash; }
+    public void setDocumentsIPFSHash(String documentsIPFSHash) { this.documentsIPFSHash = documentsIPFSHash; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    // Transient getters and setters
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
@@ -104,25 +127,6 @@ public class Identity {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getIssuedDate() { return issuedDate; }
-    public void setIssuedDate(String issuedDate) { this.issuedDate = issuedDate; }
-
-    public String getIssuedBy() { return issuedBy; }
-    public void setIssuedBy(String issuedBy) { this.issuedBy = issuedBy; }
-
-    public String getBiometricHash() { return biometricHash; }
-    public void setBiometricHash(String biometricHash) { this.biometricHash = biometricHash; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    // New wallet-related getters and setters
-    public String getPublicKey() { return publicKey; }
-    public void setPublicKey(String publicKey) { this.publicKey = publicKey; }
-
-    public String getWalletId() { return walletId; }
-    public void setWalletId(String walletId) { this.walletId = walletId; }
-
-    public String getCertificateHash() { return certificateHash; }
-    public void setCertificateHash(String certificateHash) { this.certificateHash = certificateHash; }
+    public String getEmergencyContact() { return emergencyContact; }
+    public void setEmergencyContact(String emergencyContact) { this.emergencyContact = emergencyContact; }
 }
