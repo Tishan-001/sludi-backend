@@ -1,0 +1,40 @@
+# Download IPFS
+wget https://dist.ipfs.tech/go-ipfs/v0.24.0/go-ipfs_v0.24.0_linux-amd64.tar.gz
+
+# Extract
+tar -xvzf go-ipfs_v0.24.0_linux-amd64.tar.gz
+
+# Install
+cd go-ipfs
+sudo bash install.sh
+
+# Check version
+ipfs --version
+
+#Initialize the IPFS node (only needed the first time)
+ipfs init
+
+#Start the IPFS daemon
+ipfs daemon
+
+#Verify the node is running:Open a new terminal and run
+ipfs id
+
+#Install postgres
+# Update package index
+sudo apt update
+
+# Install PostgreSQL and client tools
+sudo apt install postgresql postgresql-contrib
+
+#Start & enable the service
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+#Check status:
+sudo systemctl status postgresql
+
+#Verify Installation
+sudo -i -u postgres
+psql
+
