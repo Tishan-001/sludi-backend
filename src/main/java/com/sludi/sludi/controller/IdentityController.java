@@ -1,5 +1,6 @@
 package com.sludi.sludi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sludi.sludi.DTO.*;
 import com.sludi.sludi.domain.Identity;
 import com.sludi.sludi.domain.PersonalData;
@@ -35,6 +36,9 @@ public class IdentityController {
 
     @Autowired
     private AuditService auditService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // ===============================
     // GOVERNMENT ENDPOINTS (Admin Only)
@@ -84,14 +88,17 @@ public class IdentityController {
      */
     @PostMapping("/admin/register")
     public ResponseEntity<Map<String, Object>> registerCompleteIdentity(
-            @RequestPart("identity") Identity identity,
-            @RequestPart("personalData") PersonalData personalData,
+            @RequestPart("identity") String identityJson,
+            @RequestPart("personalData") String personalDataJson,
             @RequestPart(value = "photo", required = false) MultipartFile photo,
             @RequestPart(value = "fingerprint", required = false) MultipartFile fingerprint,
             @RequestPart(value = "documents", required = false) MultipartFile[] documents,
             HttpServletRequest request) {
 
         try {
+            //Deserialize JSON String to POJOs
+            Identity identity = objectMapper.readValue(identityJson, Identity.class);
+            PersonalData personalData = objectMapper.readValue(personalDataJson, PersonalData.class);
             // Validate required fields
             if (identity.getNic() == null || identity.getNic().trim().isEmpty()) {
                 return createErrorResponse("NIC is required", null);
@@ -129,7 +136,7 @@ public class IdentityController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            auditService.logAction(identity != null ? identity.getNic() : "UNKNOWN",
+            auditService.logAction( "UNKNOWN",
                     "IDENTITY_REGISTRATION_FAILED", "ADMIN",
                     "Registration failed: " + e.getMessage(), request.getRemoteAddr());
             return createErrorResponse("Identity registration failed", e);
