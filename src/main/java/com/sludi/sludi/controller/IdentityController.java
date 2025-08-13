@@ -9,6 +9,7 @@ import com.sludi.sludi.service.IdentityService;
 import com.sludi.sludi.service.WalletService;
 import com.sludi.sludi.service.IpfsService;
 import com.sludi.sludi.service.AuditService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -141,6 +142,31 @@ public class IdentityController {
                     "Registration failed: " + e.getMessage(), request.getRemoteAddr());
             return createErrorResponse("Identity registration failed", e);
         }
+    }
+
+    @GetMapping("/admin/identities/{nic}")
+    public ResponseEntity<Map<String, Object>> getCompleteIdentitiy(
+            @PathVariable String nic,
+            @RequestParam(defaultValue = "false") boolean includePersonalData,
+            HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Identity identity = identityService.getCompleteIdentity(nic, includePersonalData);
+
+            response.put("success", true);
+            response.put("data", identity);
+            response.put("includePersonalData", includePersonalData);
+            return ResponseEntity.ok(response);
+        }catch(EntityNotFoundException e){
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error","An unexpected error occuured: " +e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
     }
 
     @PutMapping("/admin/identities/{nic}/status")
